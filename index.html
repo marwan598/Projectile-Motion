@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>projectile motion</title>
+    <style>
+      body {
+        text-align: center;
+      }
+      .control {
+        margin-top: 20px;
+      }
+
+      .buttons {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Projectile Motion</h1>
+      <canvas id="surface" width="1280" height="620"></canvas>
+
+      <div class="control">
+        <label for="angle">Angle</label>
+        <input
+          name="angle"
+          type="number"
+          id="angle"
+          value=""
+          placeholder="angle"
+          required
+        />
+        <label for="velocity">Velocity</label>
+        <input
+          type="number"
+          name="velocity"
+          id="vel"
+          value=""
+          placeholder="velocity"
+          required
+        />
+      </div>
+
+      <div class="buttons">
+        <input type="button" id="starter" value="start" onclick="start()" />
+        <input type="button" id="starter" value="Reset" onclick="reset()" />
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      const pro = {
+        x: 50,
+        y: 380,
+        r: 15,
+        v: document.getElementById("vel").value,
+        theta: document.getElementById("angle").value,
+      };
+
+      var canvas = document.getElementById("surface");
+      var ctx = canvas.getContext("2d");
+      var img = new Image();
+      img.src = "https://i.postimg.cc/NM5Yt18y/ball.png";
+      img.crossOrigin = "anonymous";
+
+      var frameCount = 0;
+      var v0x = pro.v * Math.cos((pro.theta * Math.PI) / 180);
+      var v0y = pro.v * Math.sin((pro.theta * Math.PI) / 180);
+      var startX = pro.x;
+      var startY = pro.y;
+      var g = 9.8;
+
+      setInterval(() => {
+        //smooth clear
+        ctx.save();
+        ctx.fillStyle = "#333";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
+
+        if (pro.y < canvas.height - pro.r && pro.x < canvas.width - pro.r) {
+          pro.y =
+            startY - (v0y * frameCount - (1 / 2) * g * Math.pow(frameCount, 2));
+          pro.x = startX + v0x * frameCount;
+        }
+        // Drawing the ball Image into the canvas
+        ctx.save();
+        ctx.beginPath();
+        ctx.drawImage(img, pro.x - 12, pro.y - 12);
+        ctx.arc(pro.x, pro.y, pro.r, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.restore();
+        frameCount += 0.1;
+      }, 1000 / 77);
+
+      //   experiment Start Function
+
+      const start = () => {
+        pro.x = 50;
+        pro.y = 380;
+        pro.v = document.getElementById("vel").value;
+        pro.theta = document.getElementById("angle").value;
+        frameCount = 0;
+        v0x = pro.v * Math.cos((pro.theta * Math.PI) / 180);
+        v0y = pro.v * Math.sin((pro.theta * Math.PI) / 180);
+
+        console.log(`Distance Traveled in X Axis = ${v0x}`);
+        console.log(`Distance Traveled in Y Axis = ${v0y}`);
+      };
+
+      //   Experiment Reset Function
+
+      const reset = () => {
+        pro.x = 50;
+        pro.y = 380;
+        pro.v = document.getElementById("vel").value = "";
+        pro.theta = document.getElementById("angle").value = "";
+        frameCount = 0;
+        v0x = pro.v * Math.cos((pro.theta * Math.PI) / 180);
+        v0y = pro.v * Math.sin((pro.theta * Math.PI) / 180);
+      };
+    </script>
+  </body>
+</html>
